@@ -57,7 +57,9 @@ try:
 except FileNotFoundError:
     pass
 
-print("Setting up...")
+Version = 1.0
+
+print(f"Setting up CMDPlus V{Version}")
 
 # Colours
 DARK_BLUE = 0x01
@@ -105,13 +107,13 @@ FileLoc = os.getcwd()
 
 os.chdir(rootPath())
 
-print("Command prompt setup.\nEnter \"exit\" to quit.")
+print("Setup finished.\nEnter \"exit\" to quit.")
 
 if not checkIdle():
-    ctypes.windll.kernel32.SetConsoleTitleW("CMD+")
+    ctypes.windll.kernel32.SetConsoleTitleW("CMDPlus")
 
 while True:
-    UserInput = input(f"CMD+: {os.getcwd()}> ")
+    UserInput = input(f"CMDPlus: {os.getcwd()}> ")
     Command = UserInput.split(" ")[0]
     AdminMode = False
     if len(Command) == 0:
