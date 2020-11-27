@@ -17,3 +17,9 @@ CMDPlus has the bonus on being able to be used on systems with Command Prompt di
 3. Run the Python file, CMDPlus.py
 ### Credits
 Main code: JezzaProto
+
+
+
+
+
+~~i mean technically its not an emulator it does use cmd for quite a lot but shut up~~
