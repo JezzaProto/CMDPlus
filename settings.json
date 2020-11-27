@@ -1,0 +1,15 @@
+{
+    "aliases": {
+        "alias": "aliases",
+        "cp": "copy",
+        "delete": "del",
+        "ls": "dir",
+        "mv": "move",
+        "open": "more",
+        "read": "more",
+        "remove": "del",
+        "rm": "del",
+        "see": "more"
+    },
+    "tqdm": true
+}
