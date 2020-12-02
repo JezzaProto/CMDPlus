@@ -6,8 +6,7 @@ from winreg import ConnectRegistry, OpenKey, QueryValueEx, HKEY_CURRENT_USER
 
 def clear():
     if checkIdle():
-        for _ in range(30):
-            print("\n")
+        print("\n"*100)
     elif name == "nt":
         _ = system("cls")
     else:
@@ -46,16 +45,13 @@ def info(msg):
         print(msg)
         setColour(WHITE)
 
-try:
-    Key = r"Software\Policies\Microsoft\Windows\System"
-    Reg = ConnectRegistry(None, HKEY_CURRENT_USER)
-    CMDDisableKey = OpenKey(Reg, Key)
-    CMDDisableVal = QueryValueEx(CMDDisableKey, "DisableCMD")[0]
-    if CMDDisableVal == 1:
-        print("CMD and scripts are disabled. This program will not work.")
-        sys.exit(1)
-except FileNotFoundError:
-    pass
+def success(msg):
+    if checkIdle():
+        print(msg)
+    else:
+        setColour(GREEN)
+        print(msg)
+        setColour(WHITE)
 
 Version = 1.0
 
@@ -81,10 +77,21 @@ Yes = ["Y", "YES"]
 All = ["*.*", "all"]
 
 try:
+    Key = r"Software\Policies\Microsoft\Windows\System"
+    Reg = ConnectRegistry(None, HKEY_CURRENT_USER)
+    CMDDisableKey = OpenKey(Reg, Key)
+    CMDDisableVal = QueryValueEx(CMDDisableKey, "DisableCMD")[0]
+    if CMDDisableVal == 1:
+        print("CMD and scripts are disabled. CMDPlus requires at least batch scripts to be enabled.")
+        sys.exit(1)
+except FileNotFoundError:
+    pass
+
+try:
     with open("settings.json", "r") as file:
         Settings = json.load(file)
     SettingsFile = True
-    print("Settings file found.")
+    info("Settings file found.")
 except (json.decoder.JSONDecodeError, FileNotFoundError) as e:
     error(f"An error has occured.\nError: {e}\nRunning without aliases")
     SettingsFile = False
@@ -107,7 +114,7 @@ FileLoc = os.getcwd()
 
 os.chdir(rootPath())
 
-print("Setup finished.\nEnter \"exit\" to quit.")
+success("Setup finished.\nEnter \"exit\" to quit.")
 
 if not checkIdle():
     ctypes.windll.kernel32.SetConsoleTitleW("CMDPlus")
@@ -128,26 +135,27 @@ while True:
             Command = Settings["aliases"][Command]
         except KeyError:
             pass
+    UserInput = f'{Command} {" ".join(Args)}'
     if Command == "explorer":
         if len(Args) == 0:
-            print(f"Opening explorer in {os.getcwd()}")
+            info(f"Opening explorer in {os.getcwd()}")
             system(f'explorer %cd%')
             continue
         Dir = "\\".join(Args)
-        print(f"Opening explorer in {Dir}")
+        info(f"Opening explorer in {Dir}")
         system(f'start "{os.path.realpath(Dir)}"')
         continue
     elif Command == "cd":
         if len(Args) == 0:
-            print(f"Current Directory: {os.getcwd()}")
+            info(f"Current Directory: {os.getcwd()}")
             continue
         cdArgs = " ".join(Args)
         try:
             os.chdir(cdArgs)
-            print(f"Changed directory to {os.getcwd()}")
+            success(f"Changed directory to {os.getcwd()}")
             continue
         except (FileNotFoundError, PermissionError) as e:
-            print(f"Error changing directory.\nError: {e}")
+            error(f"Error changing directory.\nError: {e}")
             continue
     elif Command in ["cls", "clear"]:
         clear()
@@ -156,13 +164,13 @@ while True:
         if Command[1] == ":" and Command[0].isalpha():
             os.chdir(Command)
             os.chdir("\\")
-            print(f"Changed directory to {os.getcwd()}")
+            success(f"Changed directory to {os.getcwd()}")
             continue
     except:
         pass
     if Command == "title":
         if checkIdle():
-            print("Title command not supported inside IDLE.")
+            error("Title command not supported inside IDLE.")
             continue
         ctypes.windll.kernel32.SetConsoleTitleW(" ".join(Args))
         continue
@@ -209,6 +217,7 @@ while True:
                         os.rmdir(" ".join(Args))
                     else:
                         os.remove(" ".join(Args))
+                    success("{' '.join(Args)} deleted.")
                 except (IsADirectoryError, OSError, WindowsError) as e:
                     error(f"Could not remove file.\nError: {e}")
                     continue
@@ -230,43 +239,43 @@ while True:
                 Command = Args[1]
                 Alias = Args[2]
             except IndexError:
-                print("Missing arguments.")
+                error("Missing arguments.")
                 continue
             try:
                 OldCommand = Settings["aliases"][Command]
                 if OldCommand == Alias:
-                    print("This command is already aliased to this alias.")
+                    error("This command is already aliased to this alias.")
                     continue
                 Confirm = input(f"This command is already aliased to {OldCommand}.\nDo you want to overwrite it?\n")
                 if Confirm.upper() in Yes:
                     Settings["aliases"][Command] = Alias
-                    print(f"\"{Command}\" alias updated to \"{Alias}\".")
+                    success(f"\"{Command}\" alias updated to \"{Alias}\".")
                     continue
                 else:
-                    print("Not continuing.")
+                    info("Not continuing.")
                     continue
             except (IndexError, KeyError):
                 Settings["aliases"][Command] = Alias
-                print(f"\"{Command}\" alias set to \"{Alias}\".")
+                info(f"\"{Command}\" alias set to \"{Alias}\".")
                 continue
         elif Args[0] == "remove":
             try:
                 Command = Args[1]
             except IndexError:
-                print("Missing arguments.")
+                error("Missing arguments.")
                 continue
             try:
                 OldCommand = Settings["aliases"][Command]
                 Confirm = input(f"This command is aliased to {OldCommand}.\nDo you want to remove it?\n")
                 if Confirm.upper() in Yes:
                     del Settings["aliases"][Command]
-                    print(f"{Command} alias removed.")
+                    success(f"{Command} alias removed.")
                     continue
                 else:
-                    print("Not continuing.")
+                    info("Not continuing.")
                     continue
             except KeyError:
-                print("This is not an alias.")
+                error("This is not an alias.")
                 continue
         elif Args[0] == "view":
             try:
@@ -279,10 +288,10 @@ while True:
                 continue
             try:
                 OldCommand = Settings["aliases"][Command]
-                print(f"\"{Command}\" is aliased to \"{OldCommand}\"")
+                success(f"\"{Command}\" is aliased to \"{OldCommand}\"")
                 continue
             except KeyError:
-                print(f"\"{Command}\" is not aliased.")
+                error(f"\"{Command}\" is not aliased.")
                 continue
     elif Command == "reload":
         OldDir = os.getcwd()
@@ -291,7 +300,7 @@ while True:
             with open("settings.json", "r") as file:
                 Settings = json.load(file)
             SettingsFile = True
-            print("Settings file reloaded.")
+            success("Settings file reloaded.")
         except (json.decoder.JSONDecodeError, FileNotFoundError) as e:
             error(f"An error has occured.\nError: {e}\nRunning without aliases")
             SettingsFile = False
@@ -310,21 +319,36 @@ while True:
                 TQDMInstall = False
         os.chdir(OldDir)
         continue
+    elif Command == "more":
+        if len(Args) == 0:
+            error("No file entered.")
+            continue
+        Filename = " ".join(Args)
+        try:
+            with open(Filename, mode="r", encoding="utf-8") as File:
+                info(f"Contents of {Filename}:")
+                Line = File.readline()
+                while Line:
+                    print(Line)
+                    Line = File.readline()
+            success("End of file.")
+        except (FileNotFoundError, PermissionError, UnicodeDecodeError) as e:
+            error(f"An error has occured.\nError: {e}")
+        continue
     elif Command == "exit":
         break
     try:
         output = os.popen(UserInput).read()
+        print(output)
     except KeyboardInterrupt:
-        print("Command cancelled.")
+        error("Keyboard interrupt.\nCommand cancelled.")
         continue
-    print(output)
 
-print("Saving changed aliases, settings etc.")
-setColour(WHITE)
+info("Saving changed aliases, settings etc.")
 os.chdir(FileLoc)
 tmp = {}
 tmp["tqdm"] = Settings["tqdm"]
 tmp["aliases"] = Settings["aliases"]
 with open("settings.json", "w") as File:
     json.dump(tmp, File, indent=4, sort_keys=True)
-print("Settings saved. Quitting.")
+success("Settings saved. Quitting.")
