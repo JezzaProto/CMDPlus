@@ -53,7 +53,7 @@ def success(msg):
         print(msg)
         setColour(WHITE)
 
-Version = 1.0
+Version = 1.1
 
 print(f"Setting up CMDPlus V{Version}")
 
