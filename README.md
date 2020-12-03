@@ -4,6 +4,8 @@ CMDPlus is a lightweight python command prompt emulator, with a couple of improv
 CMDPlus has slightly enhanced user interface, such as:
 * Proper error reporting.
 * Counters using TQDM for deleting files and such.
+* Simple command aliasing
+* Intuitive settings file.
 
 CMDPlus has the bonus on being able to be used on systems with Command Prompt disabled, but not batch scripts.
 ### Requirements

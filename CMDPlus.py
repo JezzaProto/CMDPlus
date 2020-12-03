@@ -53,7 +53,7 @@ def success(msg):
         print(msg)
         setColour(WHITE)
 
-Version = 1.1
+Version = 1.2
 
 print(f"Setting up CMDPlus V{Version}")
 
@@ -82,7 +82,8 @@ try:
     CMDDisableKey = OpenKey(Reg, Key)
     CMDDisableVal = QueryValueEx(CMDDisableKey, "DisableCMD")[0]
     if CMDDisableVal == 1:
-        print("CMD and scripts are disabled. CMDPlus requires at least batch scripts to be enabled.")
+        error("CMD and scripts are disabled. CMDPlus requires at least batch scripts to be enabled.")
+        sleep(5)
         sys.exit(1)
 except FileNotFoundError:
     pass
@@ -121,7 +122,7 @@ if not checkIdle():
 
 while True:
     UserInput = input(f"CMDPlus: {os.getcwd()}> ")
-    Command = UserInput.split(" ")[0]
+    Command = UserInput.split(" ")[0].lower()
     AdminMode = False
     if len(Command) == 0:
             print()
@@ -135,7 +136,6 @@ while True:
             Command = Settings["aliases"][Command]
         except KeyError:
             pass
-    UserInput = f'{Command} {" ".join(Args)}'
     if Command == "explorer":
         if len(Args) == 0:
             info(f"Opening explorer in {os.getcwd()}")
@@ -178,7 +178,7 @@ while True:
         if len(Args) == 0:
             error("Deletion command missing arguments.")
             continue
-        if Args[0] in All:
+        if Args[0].lower() in All:
             info("Are you sure you want to delete this directories contents? Y/N")
             confirm = input()
             if confirm.upper() in Yes:
@@ -234,7 +234,7 @@ while True:
             for Key, Item in Settings["aliases"].items():
                 print("{:<15} | {:<15}".format(Key, Item))
             continue
-        if Args[0] == "add":
+        if Args[0].lower() == "add":
             try:
                 Command = Args[1]
                 Alias = Args[2]
@@ -258,7 +258,7 @@ while True:
                 Settings["aliases"][Command] = Alias
                 info(f"\"{Command}\" alias set to \"{Alias}\".")
                 continue
-        elif Args[0] == "remove":
+        elif Args[0].lower() == "remove":
             try:
                 Command = Args[1]
             except IndexError:
@@ -277,7 +277,7 @@ while True:
             except KeyError:
                 error("This is not an alias.")
                 continue
-        elif Args[0] == "view":
+        elif Args[0].lower() == "view":
             try:
                 Command = Args[1]
             except IndexError:
@@ -318,6 +318,7 @@ while True:
             except KeyError:
                 TQDMInstall = False
         os.chdir(OldDir)
+        info("Finished reloading.")
         continue
     elif Command == "more":
         if len(Args) == 0:
@@ -335,6 +336,23 @@ while True:
         except (FileNotFoundError, PermissionError, UnicodeDecodeError) as e:
             error(f"An error has occured.\nError: {e}")
         continue
+    elif Command == "settings":
+        if len(Args) == 0:
+            info("Current Settings:")
+            setColour(LIGHT_BLUE)
+            print(f"TQDM Installed: {Settings['tqdm']}")
+            success(f"End of settings.")
+            continue
+        if Args[0].upper() == "TQDM":
+            setColour(LIGHT_BLUE)
+            print(f"TQDM Installed: {Settings['tqdm']}")
+            confirm = input("Do you want to toggle TQDM settings? (Y/N):\n")
+            if confirm.upper() in Yes:
+                Settings["tqdm"] = not Settings["tqdm"]
+                info(f"Changed TQDM settings to: {Settings['tqdm']}")
+            else:
+                info("Not changing.")
+            continue
     elif Command == "exit":
         break
     try:
