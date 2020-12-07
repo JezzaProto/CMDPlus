@@ -53,7 +53,7 @@ def success(msg):
         print(msg)
         setColour(WHITE)
 
-Version = 1.2
+Version = 1.2.1
 
 print(f"Setting up CMDPlus V{Version}")
 
@@ -121,7 +121,13 @@ if not checkIdle():
     ctypes.windll.kernel32.SetConsoleTitleW("CMDPlus")
 
 while True:
-    UserInput = input(f"CMDPlus: {os.getcwd()}> ")
+    if checkIdle():
+        UserInput = input(f"CMDPlus: {os.getcwd()}> ")
+    else:
+        setColour(GREEN)
+        print("CMDPlus: ", end="")
+        setColour(WHITE)
+        UserInput = input(f"{os.getcwd()}> ")
     Command = UserInput.split(" ")[0].lower()
     AdminMode = False
     if len(Command) == 0:
