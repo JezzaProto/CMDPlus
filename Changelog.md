@@ -29,3 +29,7 @@ Minor Update:
 Minor Update:
 * Added custom mkdir and rmdir commands.
 * Alerts user of an IDLE runtime.
+
+## V1.2.2.1
+Very Minor Update:
+* Added confirmation for rmdir.

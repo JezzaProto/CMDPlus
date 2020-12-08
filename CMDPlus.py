@@ -53,7 +53,7 @@ def success(msg):
         print(msg)
         setColour(WHITE)
 
-Version = "1.2.2"
+Version = "1.2.2.1"
 
 print(f"Setting up CMDPlus V{Version}")
 
@@ -203,7 +203,7 @@ while True:
                             error(f"Error deleting {dirpath}:\n{ex}")
                     continue
                 else:
-                    for dirpath, dirnames, filenames in os.walk(os.getcwd(), topdown=False):#
+                    for dirpath, dirnames, filenames in os.walk(os.getcwd(), topdown=False):
                         for file in filenames:
                             try:
                                 os.remove(file)
@@ -389,6 +389,10 @@ while True:
         DirName = " ".join(Args)
         if not os.path.exists(DirName):
             error("This directory doesnt exist.")
+            continue
+        confirm = input(f"Are you sure you want to remove {DirName}?\n").upper()
+        if confirm not in Yes:
+            error("Deletion cancelled.")
             continue
         try:
             os.rmdir(DirName)
