@@ -53,7 +53,7 @@ def success(msg):
         print(msg)
         setColour(WHITE)
 
-Version = 1.2.1
+Version = "1.2.1"
 
 print(f"Setting up CMDPlus V{Version}")
 
@@ -72,6 +72,11 @@ LIGHT_BLUE = 0x0b
 LIGHT_RED = 0x0c
 PURPLE = 0x0d
 YELLOW = 0x0e
+
+if name != "nt":
+    error("Non-windows systems are not yet supported.")
+    sleep(5)
+    sys.exit(1)
 
 Yes = ["Y", "YES"]
 All = ["*.*", "all"]
