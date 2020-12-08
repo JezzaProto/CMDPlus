@@ -24,3 +24,8 @@ Minor Update:
 * Added Changelog.md
 * Checks for Windows system at startup.
 * Linux/MacOS support may come later.
+
+## V1.2.2
+Minor Update:
+* Added custom mkdir and rmdir commands.
+* Alerts user of an IDLE runtime.

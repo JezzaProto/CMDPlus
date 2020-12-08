@@ -53,7 +53,7 @@ def success(msg):
         print(msg)
         setColour(WHITE)
 
-Version = "1.2.1"
+Version = "1.2.2"
 
 print(f"Setting up CMDPlus V{Version}")
 
@@ -120,10 +120,12 @@ FileLoc = os.getcwd()
 
 os.chdir(rootPath())
 
-success("Setup finished.\nEnter \"exit\" to quit.")
-
-if not checkIdle():
+if checkIdle():
+    print("IDLE runtime detected. Some features will be disabled such as \"title\".")
+else:
     ctypes.windll.kernel32.SetConsoleTitleW("CMDPlus")
+
+success("Setup finished.\nEnter \"exit\" to quit.")
 
 while True:
     if checkIdle():
@@ -357,12 +359,43 @@ while True:
         if Args[0].upper() == "TQDM":
             setColour(LIGHT_BLUE)
             print(f"TQDM Installed: {Settings['tqdm']}")
+            setColour(GOLD)
             confirm = input("Do you want to toggle TQDM settings? (Y/N):\n")
             if confirm.upper() in Yes:
                 Settings["tqdm"] = not Settings["tqdm"]
                 info(f"Changed TQDM settings to: {Settings['tqdm']}")
             else:
                 info("Not changing.")
+            continue
+    elif Command == "mkdir":
+        if len(Args) == 0:
+            error("No directory name entered.")
+            continue
+        DirName = " ".join(Args)
+        if os.path.exists(DirName):
+            error("This directory already exists.")
+            continue
+        try:
+            os.mkdir(DirName)
+            success(f"{DirName} directory created.")
+            continue
+        except NotADirectoryError as e:
+            error(f"An error has occured.\nError: {e}")
+            continue
+    elif Command == "rmdir":
+        if len(Args) == 0:
+            error("No directory name entered.")
+            continue
+        DirName = " ".join(Args)
+        if not os.path.exists(DirName):
+            error("This directory doesnt exist.")
+            continue
+        try:
+            os.rmdir(DirName)
+            success(f"{DirName} directory removed.")
+            continue
+        except OSError as e:
+            error(f"An error has occured.\nError: {e}")
             continue
     elif Command == "exit":
         break
