@@ -1,4 +1,5 @@
 {
+    "GUI": true,
     "aliases": {
         "cat": "more",
         "cp": "copy",

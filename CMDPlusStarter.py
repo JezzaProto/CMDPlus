@@ -1,0 +1,68 @@
+import os, sys, ctypes, shutil, subprocess, json, pathlib
+from os import system, name
+from time import sleep
+from datetime import datetime
+from winreg import ConnectRegistry, OpenKey, QueryValueEx, HKEY_CURRENT_USER
+import CMDPlusNGUI as CMDPNGUI
+import CMDPlusGUI as CMDPGUI
+
+Version = "2.0"
+
+global FileLoc
+FileLoc = os.getcwd()
+
+print(f"Preparing CMDPlus V{Version}")
+
+if name != "nt":
+	print("Non-windows systems are not yet supported.")
+	sleep(5)
+	sys.exit(1)
+
+try:
+	Key = r"Software\Policies\Microsoft\Windows\System"
+	Reg = ConnectRegistry(None, HKEY_CURRENT_USER)
+	CMDDisableKey = OpenKey(Reg, Key)
+	CMDDisableVal = QueryValueEx(CMDDisableKey, "DisableCMD")[0]
+	if CMDDisableVal == 1:
+		print("CMD and scripts are disabled. CMDPlus requires at least batch scripts to be enabled.")
+		sleep(5)
+		sys.exit(1)
+except FileNotFoundError:
+	pass
+
+try:
+	with open("settings.json", "r") as file:
+		Settings = json.load(file)
+	SettingsFile = True
+except (json.decoder.JSONDecodeError, FileNotFoundError) as e:
+	print(f"An error has occured.\nError: {e}\nPresuming no GUI.")
+	SettingsFile = False
+
+if SettingsFile:
+	try:
+		if Settings["GUI"]:
+			try:
+				import PySimpleGUI as sg
+				GUI = True
+			except ImportError:
+				GUI = False
+		else:
+			GUI = False
+	except KeyError:
+		GUI = False
+
+if not GUI:
+	Settings = CMDPNGUI.main()
+else:
+	Settings = CMDPGUI.main()
+
+print("Saving changed aliases, settings etc.")
+os.chdir(FileLoc)
+tmp = {}
+tmp["tqdm"] = Settings["tqdm"]
+tmp["aliases"] = Settings["aliases"]
+tmp["GUI"] = Settings["GUI"]
+with open("settings.json", "w") as File:
+	json.dump(tmp, File, indent=4, sort_keys=True)
+print("Settings saved. Quitting.")
+sleep(2)

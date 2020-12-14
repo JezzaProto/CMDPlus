@@ -33,3 +33,9 @@ Minor Update:
 ## V1.2.2.1
 Very Minor Update:
 * Added confirmation for rmdir.
+
+## V2.0
+Very Major Update:
+* Added a GUI edition. (Still works without the GUI though)
+* Now starts with CMDPlusStarter.py
+* CMDPlusStarter.py handles all imports and settings.
