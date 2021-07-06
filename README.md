@@ -19,6 +19,6 @@ CMDPlus has the bonus on being able to be used on systems with Command Prompt di
 3. (OPTIONAL) Install TQDM, using pip or other means.
 4. Run the Python file, CMDPlusStarter.py
 ### Credits
-Main code: JezzaProto
+Main code: EvelynProto
 
 ~~i mean technically its not an emulator it does use cmd for quite a lot but shut up~~
