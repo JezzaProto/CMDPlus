@@ -29,7 +29,7 @@ def main():
 	def success(msg):
 		cprint(msg, colors="green on black")
 
-	Version = "2.0"
+	Version = "2.1"
 
 	print(f"Setting up CMDPlusGUI V{Version}")
 
@@ -48,8 +48,6 @@ def main():
 	LIGHT_RED = 0x0c
 	PURPLE = 0x0d
 	YELLOW = 0x0e
-
-	
 
 	if name != "nt":
 		print("Non-windows systems are not yet supported.")
@@ -100,8 +98,7 @@ def main():
 
 	print("Setup finished.\nEnter \"exit\" to quit.")
 
-	layout = [	[sg.Text("CMDPlus")],
-				[sg.Multiline(size=(100,25), key="-OUTPUT-", background_color="black", text_color="white", reroute_stdout=True, reroute_stderr=True, write_only=True, disabled=True, autoscroll=True)],
+	layout = [	[sg.Multiline(size=(100,25), key="-OUTPUT-", background_color="black", text_color="white", reroute_stdout=True, reroute_stderr=True, write_only=True, disabled=True, autoscroll=True)],
 				[sg.In(size=(100,1),key="-INPUT-")],
 				[sg.Button(button_text="Enter", bind_return_key=True), sg.Button(button_text="Clear"), sg.Button(button_text="Exit")]]
 	
@@ -443,7 +440,7 @@ def mainlinux():
 	def success(msg):
 		cprint(msg, colors="green on black")
 
-	Version = "2.0"
+	Version = "2.1"
 
 	print(f"Setting up CMDPlusGUI V{Version}")
 
@@ -463,7 +460,6 @@ def mainlinux():
 	PURPLE = 0x0d
 	YELLOW = 0x0e
 
-	
 	Yes = ["Y", "YES"]
 	All = ["*.*", "all"]
 
@@ -496,8 +492,7 @@ def mainlinux():
 
 	print("Setup finished.\nEnter \"exit\" to quit.")
 
-	layout = [	[sg.Text("CMDPlus")],
-				[sg.Multiline(size=(100,25), key="-OUTPUT-", background_color="black", text_color="white", reroute_stdout=True, reroute_stderr=True, write_only=True, disabled=True, autoscroll=True)],
+	layout = [	[sg.Multiline(size=(100,25), key="-OUTPUT-", background_color="black", text_color="white", reroute_stdout=True, reroute_stderr=True, write_only=True, disabled=True, autoscroll=True)],
 				[sg.In(size=(100,1),key="-INPUT-")],
 				[sg.Button(button_text="Enter", bind_return_key=True), sg.Button(button_text="Clear"), sg.Button(button_text="Exit")]]
 	
@@ -540,16 +535,7 @@ def mainlinux():
 					continue
 			except:
 				pass
-			if Command == "explorer":
-				if len(Args) == 0:
-					info(f"Opening explorer in {os.getcwd()}")
-					system(f'explorer %cd%')
-					continue
-				Dir = "\\".join(Args)
-				info(f"Opening explorer in {Dir}")
-				system(f'start "{os.path.realpath(Dir)}"')
-				continue
-			elif Command == "cd":
+			if Command == "cd":
 				if len(Args) == 0:
 					info(f"Current Directory: {os.getcwd()}")
 					continue
@@ -613,13 +599,13 @@ def mainlinux():
 							else:
 								os.remove(" ".join(Args))
 							success("{' '.join(Args)} deleted.")
-						except (IsADirectoryError, OSError, WindowsError) as e:
+						except (IsADirectoryError, OSError) as e:
 							error(f"Could not remove file.\nError: {e}")
 							continue
 					continue
 			elif Command == "dir":
 				DirArgs = " ".join(Args)
-				output = os.popen(f"dir /a {DirArgs}").read()
+				output = os.popen(f"ls -la {DirArgs}").read()
 				print(output)
 				continue
 			elif Command == "aliases":

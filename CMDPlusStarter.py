@@ -1,11 +1,6 @@
 from os import system, name
-if name == "nt":
-	windows()
-elif name == 'posix':
-	linux()
-else:
-	print('Unknown os, exiting')
-	sys.exit()
+import sys
+
 def windows():
 	import os, sys, ctypes, shutil, subprocess, json, pathlib
 	from time import sleep
@@ -14,14 +9,12 @@ def windows():
 	import CMDPlusNGUI as CMDPNGUI
 	import CMDPlusGUI as CMDPGUI
 
-	Version = "2.0"
+	Version = "2.1"
 
 	global FileLoc
 	FileLoc = os.getcwd()
 
 	print(f"Preparing CMDPlus V{Version}")
-
-
 
 	try:
 		Key = r"Software\Policies\Microsoft\Windows\System"
@@ -71,6 +64,7 @@ def windows():
 		json.dump(tmp, File, indent=4, sort_keys=True)
 	print("Settings saved. Quitting.")
 	sleep(2)
+
 def linux():
 	import os, sys, ctypes, shutil, subprocess, json, pathlib
 	from os import system, name
@@ -79,13 +73,12 @@ def linux():
 	import CMDPlusNGUI as CMDPNGUI
 	import CMDPlusGUI as CMDPGUI
 
-	Version = "2.0"
+	Version = "2.1"
 
 	global FileLoc
 	FileLoc = os.getcwd()
 
 	print(f"Preparing CMDPlus V{Version}")
-
 
 	try:
 		with open("settings.json", "r") as file:
@@ -102,6 +95,7 @@ def linux():
 					import PySimpleGUI as sg
 					GUI = True
 				except ImportError:
+					print("PySimpleGUI was not found to be installed\nThis could be because linux's python doesn't come natively with tkinter.\nYou can run\"sudo apt install python3-tk\" and \"pip install -U pysimplegui\" to install both of them.")
 					GUI = False
 			else:
 				GUI = False
@@ -123,3 +117,11 @@ def linux():
 		json.dump(tmp, File, indent=4, sort_keys=True)
 	print("Settings saved. Quitting.")
 	sleep(2)
+
+if name == "nt":
+	windows()
+elif name == 'posix':
+	linux()
+else:
+	print('Unknown os, exiting')
+	sys.exit()
