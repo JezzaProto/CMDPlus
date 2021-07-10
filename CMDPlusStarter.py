@@ -109,9 +109,9 @@ def linux():
 			GUI = False
 
 	if not GUI:
-		Settings = CMDPNGUI.main()
+		Settings = CMDPNGUI.mainlinux()
 	else:
-		Settings = CMDPGUI.main()
+		Settings = CMDPGUI.mainlinux()
 
 	print("Saving changed aliases, settings etc.")
 	os.chdir(FileLoc)
