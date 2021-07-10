@@ -807,4 +807,3 @@ def mainlinux():
 					error("Keyboard interrupt.\nCommand cancelled.")
 					continue
 	return Settings
-	return Settings
