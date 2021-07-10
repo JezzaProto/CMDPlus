@@ -788,8 +788,7 @@ def mainlinux():
         elif Command == "exit":
             break
         try:
-            output = os.system(UserInput).read()
-            print(output)
+            os.system(UserInput)
         except KeyboardInterrupt:
             error("Keyboard interrupt.\nCommand cancelled.")
             continue
