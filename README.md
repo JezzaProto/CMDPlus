@@ -10,6 +10,7 @@ CMDPlus has slightly enhanced user interface, such as:
 
 CMDPlus has the bonus on being able to be used on systems with Command Prompt disabled, but not batch scripts.
 ### Requirements
+* Windows Operating System
 * Python 3.7+
 * (RECOMMENDED) PySimpleGUI
 * (OPTIONAL) TQDM
